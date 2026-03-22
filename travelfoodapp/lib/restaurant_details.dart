@@ -169,6 +169,69 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
             ),
  
             Divider(color: Colors.grey[300]),
+
+           // Dietary Tags
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Dietary Options',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _currentRestaurant.dietaryTags
+                        .map((tag) => Chip(
+                          label: Text(tag, style: const TextStyle(fontSize: 12)),
+                          backgroundColor: Colors.orangeAccent[100],
+                          side: BorderSide(color: Colors.orangeAccent.shade400),
+                        ))
+                        .toList(),
+                  ),
+                ],
+              ),
+            ),
+ 
+            Divider(color: Colors.grey[300]),
+ 
+            // Special Dishes
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Signature Dishes',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  ...List.generate(
+                    _currentRestaurant.specialDishes.length,
+                    (index) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.star_half, color: Colors.amber, size: 16),
+                          const SizedBox(width: 8),
+                          Text(_currentRestaurant.specialDishes[index]),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+ 
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
  
   
 
