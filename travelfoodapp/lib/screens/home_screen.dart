@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../data/sample_restaurants.dart';
+import '../widgets/restaurant_card.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final List<String> selectedDietary;
   final List<String> selectedCuisines;
 
@@ -11,22 +13,95 @@ class HomeScreen extends StatelessWidget {
   });
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int selectedIndex = 0;
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Your selected preferences:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            Text('Dietary: ${selectedDietary.join(', ') == '' ? 'None' : selectedDietary.join(', ')}'),
-            Text('Cuisines: ${selectedCuisines.join(', ') == '' ? 'None' : selectedCuisines.join(', ')}'),
-            const SizedBox(height: 20),
-            const Text('Recommended places will show here soon.', style: TextStyle(fontSize: 16)),
-          ],
+      appBar: AppBar(
+        title: const Text('Home'),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              TextField(
+                readOnly: true,
+                decoration: InputDecoration(
+                  hintText: 'Search restaurants...............',
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              if (widget.selectedDietary.isNotEmpty ||
+                  widget.selectedCuisines.isNotEmpty)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      ...widget.selectedDietary.map(
+                        (item) => Chip(label: Text(item)),
+                      ),
+                      ...widget.selectedCuisines.map(
+                        (item) => Chip(label: Text(item)),
+                      ),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: sampleRestaurants.length,
+                  itemBuilder: (context, index) {
+                    return RestaurantCard(
+                      restaurant: sampleRestaurants[index],
+                      onTap: () {},
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: selectedIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.favorite_border),
+            selectedIcon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.search),
+            selectedIcon: Icon(Icons.search),
+            label: 'Search',
+          ),
+        ],
       ),
     );
   }
