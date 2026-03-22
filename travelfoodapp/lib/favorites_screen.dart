@@ -52,4 +52,38 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   .toList(),
             ),
           ),
+          // Favorites List
+          Expanded(
+            child: _favoriteRestaurants.isEmpty
+                ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.favorite_border, size: 80, color: Colors.grey[400]),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No favorites yet',
+                        style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Save restaurants to your favorites',
+                        style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                      ),
+                    ],
+                  ),
+                )
+                : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _favoriteRestaurants.length,
+                  itemBuilder: (context, index) {
+                    final restaurant = _favoriteRestaurants[index];
+                    return _buildFavoriteCard(restaurant);
+                  },
+                ),
+          ),
+        ],
+      ),
+    );
+  }
  
