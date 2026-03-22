@@ -118,6 +118,59 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
+                  // Divider
+            Divider(color: Colors.grey[300]),
+ 
+            // Info Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Information',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+ 
+                  // Address
+                  _buildInfoRow(Icons.location_on, 'Address', _currentRestaurant.address),
+                  const SizedBox(height: 12),
+ 
+                  // Phone
+                  _buildInfoRow(Icons.phone, 'Phone', _currentRestaurant.phone),
+                  const SizedBox(height: 12),
+ 
+                  // Hours
+                  _buildInfoRow(Icons.access_time, 'Hours', _currentRestaurant.hours),
+                ],
+              ),
+            ),
+ 
+            Divider(color: Colors.grey[300]),
+ 
+            // Description Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'About',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _currentRestaurant.description,
+                    style: TextStyle(fontSize: 14, color: Colors.grey[700], height: 1.5),
+                  ),
+                ],
+              ),
+            ),
+ 
+            Divider(color: Colors.grey[300]),
+ 
+  
 
   
 }
