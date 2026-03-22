@@ -9,5 +9,10 @@ void main() {
     expect(find.text('Travel Food Recommendation'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     expect(find.byType(MaterialApp), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Select Your Preferences'), findsOneWidget);
   });
 }
