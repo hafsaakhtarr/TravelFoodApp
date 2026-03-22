@@ -4,11 +4,13 @@ import '../models/restaurant.dart';
 class RestaurantCard extends StatelessWidget {
   final Restaurant restaurant;
   final VoidCallback? onTap;
+  final VoidCallback onFavoriteTap;
 
   const RestaurantCard({
     super.key,
     required this.restaurant,
     this.onTap,
+    required this.onFavoriteTap,
   });
 
   @override
@@ -17,6 +19,7 @@ class RestaurantCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
       child: Card(
+        color: Colors.white,
         elevation: 3,
         margin: const EdgeInsets.only(bottom: 16),
         shape: RoundedRectangleBorder(
@@ -47,14 +50,31 @@ class RestaurantCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      restaurant.name,
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            restaurant.name,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: onFavoriteTap,
+                          icon: Icon(
+                            restaurant.isFavorite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: restaurant.isFavorite
+                                ? Colors.red
+                                : Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Row(
                       children: [
                         const Icon(Icons.star, size: 16, color: Colors.orange),
@@ -67,8 +87,11 @@ class RestaurantCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Icon(Icons.location_on,
-                            size: 16, color: Colors.redAccent),
+                        const Icon(
+                          Icons.location_on,
+                          size: 16,
+                          color: Colors.redAccent,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           '${restaurant.distanceMiles} miles',

@@ -17,6 +17,11 @@ class TravelFoodApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.deepOrange,
         scaffoldBackgroundColor: const Color(0xFFFFF9F5),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: false,
+        ),
       ),
       home: const SplashScreen(),
     );

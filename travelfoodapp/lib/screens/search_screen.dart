@@ -5,13 +5,10 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Search'),
-      ),
-      body: const Center(
+    return const SafeArea(
+      child: Center(
         child: Text(
-          'Search Screen\nYour friend will complete this part.',
+          'Search Screen\nYour friend can extend this further.',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 18,

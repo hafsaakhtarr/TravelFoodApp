@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/sample_restaurants.dart';
+import '../models/restaurant.dart';
 import '../widgets/restaurant_card.dart';
 import 'favorites_screen.dart';
 import 'search_screen.dart';
@@ -20,27 +21,115 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
+  late List<Restaurant> restaurants;
+
+  @override
+  void initState() {
+    super.initState();
+    restaurants = List<Restaurant>.from(sampleRestaurants);
+  }
+
+  void _toggleFavorite(Restaurant targetRestaurant) {
+    setState(() {
+      restaurants = restaurants.map((restaurant) {
+        if (restaurant.name == targetRestaurant.name) {
+          return restaurant.copyWith(
+            isFavorite: !restaurant.isFavorite,
+          );
+        }
+        return restaurant;
+      }).toList();
+    });
+  }
+
+  List<Restaurant> get _favoriteRestaurants {
+    return restaurants.where((restaurant) => restaurant.isFavorite).toList();
+  }
+
+  Widget _buildHomeContent() {
+    return SafeArea(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 750),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                TextField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    hintText: 'Search restaurants...............',
+                    prefixIcon: const Icon(Icons.search),
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                if (widget.selectedDietary.isNotEmpty ||
+                    widget.selectedCuisines.isNotEmpty)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        ...widget.selectedDietary.map(
+                          (item) => Chip(label: Text(item)),
+                        ),
+                        ...widget.selectedCuisines.map(
+                          (item) => Chip(label: Text(item)),
+                        ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: restaurants.length,
+                    itemBuilder: (context, index) {
+                      final restaurant = restaurants[index];
+
+                      return RestaurantCard(
+                        restaurant: restaurant,
+                        onTap: () {},
+                        onFavoriteTap: () => _toggleFavorite(restaurant),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final pages = [
       _buildHomeContent(),
-      const FavoritesScreen(),
+      FavoritesScreen(
+        favoriteRestaurants: _favoriteRestaurants,
+        onFavoriteToggle: _toggleFavorite,
+      ),
       const SearchScreen(),
     ];
 
+    final titles = ['Home', 'Favorites', 'Search'];
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          selectedIndex == 0
-              ? 'Home'
-              : selectedIndex == 1
-                  ? 'Favorites'
-                  : 'Search',
-        ),
+        title: Text(titles[selectedIndex]),
       ),
       body: pages[selectedIndex],
       bottomNavigationBar: NavigationBar(
+        backgroundColor: Colors.white,
         selectedIndex: selectedIndex,
         onDestinationSelected: (index) {
           setState(() {
@@ -64,62 +153,6 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Search',
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildHomeContent() {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              readOnly: true,
-              decoration: InputDecoration(
-                hintText: 'Search restaurants...............',
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-            const SizedBox(height: 14),
-            if (widget.selectedDietary.isNotEmpty ||
-                widget.selectedCuisines.isNotEmpty)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    ...widget.selectedDietary.map(
-                      (item) => Chip(label: Text(item)),
-                    ),
-                    ...widget.selectedCuisines.map(
-                      (item) => Chip(label: Text(item)),
-                    ),
-                  ],
-                ),
-              ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: sampleRestaurants.length,
-                itemBuilder: (context, index) {
-                  return RestaurantCard(
-                    restaurant: sampleRestaurants[index],
-                    onTap: () {},
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
