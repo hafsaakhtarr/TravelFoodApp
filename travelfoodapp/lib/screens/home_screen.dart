@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../data/sample_restaurants.dart';
 import '../widgets/restaurant_card.dart';
+import 'favorites_screen.dart';
+import 'search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<String> selectedDietary;
@@ -21,63 +23,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = [
+      _buildHomeContent(),
+      const FavoritesScreen(),
+      const SearchScreen(),
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              TextField(
-                readOnly: true,
-                decoration: InputDecoration(
-                  hintText: 'Search restaurants...............',
-                  prefixIcon: const Icon(Icons.search),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              if (widget.selectedDietary.isNotEmpty ||
-                  widget.selectedCuisines.isNotEmpty)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      ...widget.selectedDietary.map(
-                        (item) => Chip(label: Text(item)),
-                      ),
-                      ...widget.selectedCuisines.map(
-                        (item) => Chip(label: Text(item)),
-                      ),
-                    ],
-                  ),
-                ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: sampleRestaurants.length,
-                  itemBuilder: (context, index) {
-                    return RestaurantCard(
-                      restaurant: sampleRestaurants[index],
-                      onTap: () {},
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+        title: Text(
+          selectedIndex == 0
+              ? 'Home'
+              : selectedIndex == 1
+                  ? 'Favorites'
+                  : 'Search',
         ),
       ),
+      body: pages[selectedIndex],
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
         onDestinationSelected: (index) {
@@ -102,6 +64,62 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Search',
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHomeContent() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              readOnly: true,
+              decoration: InputDecoration(
+                hintText: 'Search restaurants...............',
+                prefixIcon: const Icon(Icons.search),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+            if (widget.selectedDietary.isNotEmpty ||
+                widget.selectedCuisines.isNotEmpty)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    ...widget.selectedDietary.map(
+                      (item) => Chip(label: Text(item)),
+                    ),
+                    ...widget.selectedCuisines.map(
+                      (item) => Chip(label: Text(item)),
+                    ),
+                  ],
+                ),
+              ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: sampleRestaurants.length,
+                itemBuilder: (context, index) {
+                  return RestaurantCard(
+                    restaurant: sampleRestaurants[index],
+                    onTap: () {},
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
