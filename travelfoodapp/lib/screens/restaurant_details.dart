@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'restaurant.dart';
+import '../models/restaurant.dart';
 
 class RestaurantDetailsScreen extends StatefulWidget {
   final Restaurant restaurant;
@@ -33,6 +33,21 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
     widget.onFavoriteToggle(_currentRestaurant);
   }
 
+  String _getImagePath(String cuisine) {
+    switch (cuisine.toLowerCase()) {
+      case 'chinese':
+        return 'assets/images/chinese.jpeg';
+      case 'indian':
+        return 'assets/images/indian.jpeg';
+      case 'vegetarian':
+        return 'assets/images/veg.jpeg';
+      case 'italian':
+        return 'assets/images/pasta.jpeg';
+      default:
+        return 'assets/images/pasta.jpeg';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,17 +76,21 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
               width: double.infinity,
               height: 250,
               color: Colors.grey[300],
-              child: Image.network(
-                widget.restaurant.imageUrl,
+              child: Image.asset(
+                _getImagePath(_currentRestaurant.cuisine),
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Center(
-                    child: Icon(Icons.image_not_supported, size: 80, color: Colors.grey[600]),
+                    child: Icon(
+                      Icons.image_not_supported,
+                      size: 80,
+                      color: Colors.grey[600],
+                    ),
                   );
                 },
               ),
             ),
-            
+
             // Restaurant Header
             Padding(
               padding: const EdgeInsets.all(16),
@@ -88,11 +107,17 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
                           children: [
                             Text(
                               _currentRestaurant.name,
-                              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             Text(
                               _currentRestaurant.cuisine,
-                              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey[600],
+                              ),
                             ),
                           ],
                         ),
@@ -101,142 +126,117 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  // Rating and Reviews
+                  // Rating and Distance
                   Row(
                     children: [
                       const Icon(Icons.star, color: Colors.amber, size: 24),
                       const SizedBox(width: 8),
                       Text(
                         '${_currentRestaurant.rating}',
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 24),
+                      const Icon(Icons.location_on, color: Colors.deepOrange),
+                      const SizedBox(width: 8),
                       Text(
-                        '(${_currentRestaurant.reviewCount} reviews)',
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                        '${_currentRestaurant.distanceMiles} miles away',
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  // Divider
+                ],
+              ),
+            ),
+
             Divider(color: Colors.grey[300]),
- 
-            // Info Section
+
+            // Quick Info Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Information',
+                    'Restaurant Details',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
- 
-                  // Address
-                  _buildInfoRow(Icons.location_on, 'Address', _currentRestaurant.address),
-                  const SizedBox(height: 12),
- 
-                  // Phone
-                  _buildInfoRow(Icons.phone, 'Phone', _currentRestaurant.phone),
-                  const SizedBox(height: 12),
- 
-                  // Hours
-                  _buildInfoRow(Icons.access_time, 'Hours', _currentRestaurant.hours),
-                ],
-              ),
-            ),
- 
-            Divider(color: Colors.grey[300]),
- 
-            // Description Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'About',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  _buildInfoTile(
+                    Icons.restaurant_menu,
+                    'Cuisine',
+                    _currentRestaurant.cuisine,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _currentRestaurant.description,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[700], height: 1.5),
+                  const SizedBox(height: 12),
+                  _buildInfoTile(
+                    Icons.star_rate,
+                    'Rating',
+                    '${_currentRestaurant.rating} out of 5.0',
+                  ),
+                  const SizedBox(height: 12),
+                  _buildInfoTile(
+                    Icons.directions_walk,
+                    'Distance',
+                    '${_currentRestaurant.distanceMiles} miles',
                   ),
                 ],
               ),
             ),
- 
+
             Divider(color: Colors.grey[300]),
 
-           // Dietary Tags
+            // Action Buttons
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Dietary Options',
+                    'Actions',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _currentRestaurant.dietaryTags
-                        .map((tag) => Chip(
-                          label: Text(tag, style: const TextStyle(fontSize: 12)),
-                          backgroundColor: Colors.orangeAccent[100],
-                          side: BorderSide(color: Colors.orangeAccent.shade400),
-                        ))
-                        .toList(),
-                  ),
-                ],
-              ),
-            ),
- 
-            Divider(color: Colors.grey[300]),
- 
-            // Special Dishes
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Signature Dishes',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 12),
-                  ...List.generate(
-                    _currentRestaurant.specialDishes.length,
-                    (index) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.star_half, color: Colors.amber, size: 16),
-                          const SizedBox(width: 8),
-                          Text(_currentRestaurant.specialDishes[index]),
-                        ],
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _toggleFavorite,
+                      icon: Icon(
+                        _currentRestaurant.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                      ),
+                      label: Text(
+                        _currentRestaurant.isFavorite
+                            ? 'Remove from Favorites'
+                            : 'Add to Favorites',
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _currentRestaurant.isFavorite
+                            ? Colors.red
+                            : Colors.deepOrange,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
- 
+
             const SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
- Widget _buildInfoRow(IconData icon, String label, String value) {
+
+  Widget _buildInfoTile(IconData icon, String label, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.orangeAccent, size: 20),
+        Icon(icon, color: Colors.deepOrange, size: 24),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -244,7 +244,11 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
             children: [
               Text(
                 label,
-                style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               const SizedBox(height: 4),
               Text(
@@ -257,9 +261,4 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
       ],
     );
   }
-}
- 
-  
-
-  
 }
