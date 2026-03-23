@@ -4,6 +4,7 @@ import '../models/restaurant.dart';
 import '../widgets/restaurant_card.dart';
 import 'favorites_screen.dart';
 import 'search_screen.dart';
+import 'restaurant_details.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<String> selectedDietary;
@@ -44,6 +45,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Restaurant> get _favoriteRestaurants {
     return restaurants.where((restaurant) => restaurant.isFavorite).toList();
+  }
+
+  void _navigateToDetails(Restaurant restaurant) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RestaurantDetailsScreen(
+          restaurant: restaurant,
+          onFavoriteToggle: _toggleFavorite,
+        ),
+      ),
+    );
   }
 
   Widget _buildHomeContent() {
@@ -96,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       return RestaurantCard(
                         restaurant: restaurant,
-                        onTap: () {},
+                        onTap: () => _navigateToDetails(restaurant),
                         onFavoriteTap: () => _toggleFavorite(restaurant),
                       );
                     },
