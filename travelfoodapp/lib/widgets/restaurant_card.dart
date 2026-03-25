@@ -13,6 +13,26 @@ class RestaurantCard extends StatelessWidget {
     required this.onFavoriteTap,
   });
 
+  // ✅ HELPER: Map cuisine to image path
+  String _getImagePath(String cuisine) {
+    switch (cuisine.toLowerCase()) {
+      case 'chinese':
+        return 'assets/images/chinese.jpeg';
+      case 'indian':
+        return 'assets/images/indian.jpeg';
+      case 'vegetarian':
+        return 'assets/images/veg.jpeg';
+      case 'italian':
+        return 'assets/images/pasta.jpeg';
+      case 'japanese':
+        return 'assets/images/pasta.jpeg';
+      case 'mexican':
+        return 'assets/images/pasta.jpeg';
+      default:
+        return 'assets/images/pasta.jpeg';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -30,6 +50,7 @@ class RestaurantCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // ✅ RESTAURANT IMAGE (Fixed - Now uses Image.asset)
               Container(
                 width: 84,
                 height: 84,
@@ -37,11 +58,20 @@ class RestaurantCard extends StatelessWidget {
                   color: Colors.orange.shade100,
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: const Center(
-                  child: Icon(
-                    Icons.restaurant,
-                    size: 36,
-                    color: Colors.deepOrange,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Image.asset(
+                    _getImagePath(restaurant.cuisine),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Center(
+                        child: Icon(
+                          Icons.restaurant,
+                          size: 36,
+                          color: Colors.deepOrange,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
